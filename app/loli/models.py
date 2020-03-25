@@ -6,10 +6,18 @@ class UserModel(BaseUserManager):
     """ Creates and saves a new user """
     
     def create_user(self, email, password=None, **extra_fields):
+        if not email:
+            raise ValueError("Enter an Email , dumb!")
         user = self.model(email=self.normalize_email(email),**extra_fields)
         user.set_password(password)
         user.save(using=self.db)
 
+        return user
+    def create_superuser(self, email, password):
+        user = self.create_user(email=email, password=password)
+        user.is_staff = True
+        user.is_superuser = True
+        user.save(using=self._db)
         return user
 
 class User(AbstractBaseUser, PermissionsMixin):

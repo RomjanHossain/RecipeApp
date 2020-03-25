@@ -6,7 +6,7 @@ class UserModel(BaseUserManager):
     """ Creates and saves a new user """
     
     def create_user(self, email, password=None, **extra_fields):
-        user = self.model(email=email,**extra_fields)
+        user = self.model(email=self.normalize_email(email),**extra_fields)
         user.set_password(password)
         user.save(using=self.db)
 
@@ -14,7 +14,7 @@ class UserModel(BaseUserManager):
 
 class User(AbstractBaseUser, PermissionsMixin):
     """Customer model using email instead of username """
-    email = models.EmailField(max_length=500, unique=True)
+    email = models.EmailField(max_length=100, unique=True)
     name = models.CharField(max_length=100)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
